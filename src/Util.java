@@ -7,7 +7,7 @@ import static java.lang.Double.parseDouble;
 
 public class Util {
 
-    private BilheteUnico[] bilhete = new BilheteUnico[5];
+    private BilheteUnico[] bilhete = new BilheteUnico[3];
     private int index = 0;
 
     public void menuPrincipal() {
@@ -19,8 +19,13 @@ public class Util {
 
             opcao = parseInt(showInputDialog(menu));
 
-            if (opcao == 1) {
-                menuAdmin();
+            switch (opcao) {
+                case 1:
+                    menuAdmin();
+                    break;
+                case 2:
+                    menuUsuario();
+                    break;
 
             }
 
@@ -31,7 +36,7 @@ public class Util {
     private void menuAdmin() {
 
         int opcao;
-        String menu = "MENU PRINCIPAL\n";
+        String menu = "MENU PRINCIPAL ADMINISTRADOR\n";
 
         menu += "1. Emitir bilhete\n";
         menu += "2. Listar bilhete\n";
@@ -48,6 +53,9 @@ public class Util {
                     break;
                 case 2:
                     listarBilhete();
+                    break;
+                case 3:
+                    excluirBilhete();
                     break;
 
             }
@@ -97,5 +105,115 @@ public class Util {
 
     }
 
+    private void menuUsuario() {
+
+        int opcao;
+        String menu = "MENU PRINCIPAL USUÁRIO\n";
+
+        menu += "1. Carregar bilhete\n";
+        menu += "2. Consultar saldo\n";
+        menu += "3. Passar na catraca\n";
+        menu += "4. Sair\n";
+
+        do {
+
+            opcao = parseInt(showInputDialog(menu));
+
+            if (opcao < 1 || opcao > 4) {
+                showMessageDialog(null, "Opção inválida! Tente novamente.");
+
+            } else {
+
+                switch(opcao) {
+                    case 1:
+                        carregarBilhete();
+                        break;
+                    case 2:
+                        consultarSaldo();
+                        break;
+                    case 3:
+                        passarNaCatraca();
+                        break;
+
+                }
+
+            }
+
+        } while(opcao != 4);
+
+    }
+
+    private void carregarBilhete() {
+
+        int indice = pesquisar();
+        double valor;
+
+        if (indice != -1) {
+            valor = parseDouble(showInputDialog("Valor da recarga: "));
+
+            bilhete[indice].carregarBilhete(valor);
+
+        }
+
+    }
+
+    private void consultarSaldo() {
+
+        int indice = pesquisar();
+
+        if (indice != -1) {
+            showMessageDialog(null, "Saldo = R$ " + bilhete[indice].consultarSaldo());
+
+        }
+
+    }
+
+    private void passarNaCatraca() {
+
+        int indice = pesquisar();
+
+        if (indice != -1) {
+            showMessageDialog(null, bilhete[indice].passarCatraca());
+
+        }
+
+    }
+
+    private int pesquisar() {
+
+        long cpf = parseLong(showInputDialog("Informe o CPF: "));
+
+        for (int i = 0; i < index; i++) {
+
+            if (bilhete[i].usuario.cpf == cpf) {
+                return (i);
+
+            }
+
+        }
+
+        showMessageDialog(null, "O CPF: " + cpf + " Não foi encontrado!");
+
+        return (-1);
+
+    }
+
+    private void excluirBilhete() {
+
+        int indice = pesquisar();
+        int resposta;
+
+        if (indice != -1) {
+            resposta = showConfirmDialog(null, "Tem certeza de que deseja excluir o bilhete?");
+
+            if (resposta == YES_OPTION) {
+                bilhete[indice] = bilhete[index - 1];
+                index--;
+
+            }
+
+        }
+
+    }
 
 }// class
